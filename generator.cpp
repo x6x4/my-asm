@@ -25,7 +25,7 @@ int main() {
 	d32 c(-DWORD-1, DWORD);
 	d64 a(-QWORD-1, QWORD);
 
-	std::string data_section =  "section .data\n" +
+	std::string data_section =
 		fmt::format("d:			db {}\n", d(gen)) +
 		fmt::format("e:			dw {}\n", e(gen)) +
 		fmt::format("b:			dd {}\n", b(gen)) +
