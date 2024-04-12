@@ -1,25 +1,35 @@
 section .text
-    global _start
+    global main
 
 %define SUCCESS 0
 %define DIVZERO 1
 %define OVERFLOW  2
+%define SIGFPE 8
 
-section .text
-global _start
+	extern signal
 
-_start:
+main:
+	sub rsp, 8   
+	lea	rax, [rel signal_handler]
+	mov rsi, rax
+	mov edi, SIGFPE
+	call signal WRT ..plt
+	add rsp, 8
+
     ; Evaluate the arithmetic expression
     ; a(e-b)c/(e+d)-(d+b)/e 
 
     ; Load the values of a, b, c, d, and e into registers
-    mov r8, [a]
-    mov r9d, [b]
-    mov r10d, [c]
-    mov dl, [d]
-    mov r12w, [e]
-	mov r13w, r12w
-	mov r14w, r13w
+	mov qword r8, [a]
+    mov dword r9d, [b]
+    mov dword r10d, [c]
+label:
+    xor r11, r11
+	mov byte r11b, [d]
+    mov word r12w, [e]
+	
+	mov r13, r12
+	mov r14, r13
 
     ; Calculate the intermediate values
     ; ((e-b)*c)
@@ -27,19 +37,18 @@ _start:
     imul r12d, r10d
 
     ; (e+d)
-    add r13w, dx
+    add r13w, r11w
 
     ; (d+b)/e
-    add edx, r9d
-    cqo
-    idiv r14d
-	call check_divzero
+    add r11d, r9d
+    mov eax, r11d
+	cqo
+	idiv r14d
 
     ; (a * ((e-b)*c)) / (e+d) - ((d+b)/e)
     imul r8, r12
     cqo
     idiv r13
-	call check_divzero
 
 	sub r13, r14
 
@@ -47,20 +56,11 @@ _start:
     mov qword [res], r13
 
     ; Exit the program
-    mov rax, 60         ; sys_exit
-    mov edi, SUCCESS    ; exit code
-    syscall
+    ret
 
-check_divzero:
-	pushf
-	pop rdi
-	and edi, 0x10
-	jnz divzero
-	ret
-
-divzero:
-   ; Exit the program with error code
-    mov rax, 60         ; sys_exit
+signal_handler:
+   ; Exit the program with error code`
+	mov rax, 60         ; sys_exit
     mov edi, DIVZERO    ; error code
     syscall
 
@@ -68,8 +68,8 @@ divzero:
 section .data
 res:        dq 0
 
-d:			db 64
-e:			dw 7451
-b:			dd -861213508
-c:			dd -1009975939
-a:			dq 3962771202563850414
+d:			db 5
+e:			dw 0
+b:			dd 3
+c:			dd 4
+a:			dq 2
