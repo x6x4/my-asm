@@ -1,11 +1,36 @@
-section .data
+%  testы
+
+in gdb: b success
+		print (long long int) res
+section .data 
 	res:        dq 0
 
-	d:			db 2
-	e:			dw 0
-	b:			dd 3
-	c:			dd 100000
-	a:			dq 10000000000
+	d:			db 1
+	e:			dw 1
+	b:			dd -1
+	c:			dd 1000000000
+	a:			dq 1000000000
+
+in gdb: b success
+		print (char) res
+section .data 
+	res:        dq 0
+
+	d:			db 1
+	e:			dw 1
+	b:			dd -1
+	c:			dd 1
+	a:			dq 1
+
+division by zero (return code 1)
+section .data 
+	res:        dq 0
+
+	d:			db 1
+	e:			dw -1
+	b:			dd 1
+	c:			dd 1
+	a:			dq 1
 
 section .text
 	global main
@@ -34,15 +59,15 @@ main:
 	; a*(e-b)*c/(e+d)-(d+b)/e 
 
 	; Load the values of a, b, c, d, and e into registers
-	mov qword r8, [a]
+	mov r8, qword [a]
 	xor r9, r9
-	mov dword r9d, [b]
+	mov r9d, dword [b]
 	xor r10, r10
-	mov dword r10d, [c]
+	mov r10d, dword [c]
 	xor r11, r11
-	mov byte r11b, [d]
+	movsx r11, byte [d]
 	xor r12, r12
-	mov word r12w, [e]	
+	mov r12w, word [e]	
 	mov r13, r12
 	mov r14, r13
 
@@ -51,6 +76,7 @@ main:
 	CheckOVF
 	imul r12d, r10d
 	CheckOVF
+chk:
 	imul r12, r8
 	CheckOVF
 
