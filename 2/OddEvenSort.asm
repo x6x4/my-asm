@@ -8,7 +8,11 @@ Swap:
     xor r9, r9
     movzx r9, byte [rsi]
     cmp r9b, byte [r11]
+%ifdef descend
+    jge end_swap
+%else
     jle end_swap
+%endif
         xor r9, r9
         xor r10, r10
         movzx r9, byte [rsi]
