@@ -16,18 +16,8 @@ section .text
 global _start
 
 _start:
-    mov rax, 0 
-    mov rdi, 0
-    lea rsi, [filename_buffer]
-    mov rdx, filename_sz
-    syscall
-
-    cmp rax, -1
-    je file_error
-	mov [filename_buffer+rax-1], byte 0
-
     mov rax, 2 
-    lea rdi, [filename_buffer]
+    mov rdi, [rsp+16]
 	mov rsi, 0o444 
     mov rdx, 0 
     syscall
