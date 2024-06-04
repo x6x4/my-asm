@@ -4,10 +4,10 @@ project(single_channel)
 find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -ggdb -DC_IMG")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -UC_IMG")
 
 enable_language(ASM_NASM)
-set(CMAKE_ASM_NASM_FLAGS_DEBUG "-g")
+set(CMAKE_ASM_NASM_FLAGS_DEBUG "")
 
 add_executable(single_channel.out single_channel.cpp single_channel.asm)
 
